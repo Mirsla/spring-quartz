@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alex.job.dao.CompanyMapper">
+  <resultMap id="BaseResultMap" type="com.alex.job.entity.Company">
+    <id column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="intro" jdbcType="CHAR" property="intro" />
+    <result column="lottery_server_id" jdbcType="CHAR" property="lotteryServerId" />
+    <result column="company_category" jdbcType="TINYINT" property="companyCategory" />
+    <result column="package_version" jdbcType="VARCHAR" property="packageVersion" />
+    <result column="project_count" jdbcType="INTEGER" property="projectCount" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="client_custom_made" jdbcType="VARCHAR" property="clientCustomMade" />
+    <result column="we_chat_official_accounts" jdbcType="VARCHAR" property="weChatOfficialAccounts" />
+    <result column="created_time" jdbcType="BIGINT" property="createdTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    company_id, company_name, company_code, province, city, region, address, intro, lottery_server_id, 
+    company_category, package_version, project_count, status, client_custom_made, we_chat_official_accounts, 
+    created_time, update_by, update_time, created_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from lot_company
+    where company_id = #{companyId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from lot_company
+    where company_id = #{companyId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="company_id" keyProperty="companyId" parameterType="com.alex.job.entity.Company" useGeneratedKeys="true">
+    insert into lot_company (company_name, company_code, province, 
+      city, region, address, 
+      intro, lottery_server_id, company_category, 
+      package_version, project_count, status, 
+      client_custom_made, we_chat_official_accounts, 
+      created_time, update_by, update_time, 
+      created_by)
+    values (#{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{intro,jdbcType=CHAR}, #{lotteryServerId,jdbcType=CHAR}, #{companyCategory,jdbcType=TINYINT}, 
+      #{packageVersion,jdbcType=VARCHAR}, #{projectCount,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, 
+      #{clientCustomMade,jdbcType=VARCHAR}, #{weChatOfficialAccounts,jdbcType=VARCHAR}, 
+      #{createdTime,jdbcType=BIGINT}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=BIGINT}, 
+      #{createdBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="company_id" keyProperty="companyId" parameterType="com.alex.job.entity.Company" useGeneratedKeys="true">
+    insert into lot_company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="region != null">
+        region,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="intro != null">
+        intro,
+      </if>
+      <if test="lotteryServerId != null">
+        lottery_server_id,
+      </if>
+      <if test="companyCategory != null">
+        company_category,
+      </if>
+      <if test="packageVersion != null">
+        package_version,
+      </if>
+      <if test="projectCount != null">
+        project_count,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="clientCustomMade != null">
+        client_custom_made,
+      </if>
+      <if test="weChatOfficialAccounts != null">
+        we_chat_official_accounts,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        #{intro,jdbcType=CHAR},
+      </if>
+      <if test="lotteryServerId != null">
+        #{lotteryServerId,jdbcType=CHAR},
+      </if>
+      <if test="companyCategory != null">
+        #{companyCategory,jdbcType=TINYINT},
+      </if>
+      <if test="packageVersion != null">
+        #{packageVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="projectCount != null">
+        #{projectCount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="clientCustomMade != null">
+        #{clientCustomMade,jdbcType=VARCHAR},
+      </if>
+      <if test="weChatOfficialAccounts != null">
+        #{weChatOfficialAccounts,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.alex.job.entity.Company">
+    update lot_company
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        intro = #{intro,jdbcType=CHAR},
+      </if>
+      <if test="lotteryServerId != null">
+        lottery_server_id = #{lotteryServerId,jdbcType=CHAR},
+      </if>
+      <if test="companyCategory != null">
+        company_category = #{companyCategory,jdbcType=TINYINT},
+      </if>
+      <if test="packageVersion != null">
+        package_version = #{packageVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="projectCount != null">
+        project_count = #{projectCount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="clientCustomMade != null">
+        client_custom_made = #{clientCustomMade,jdbcType=VARCHAR},
+      </if>
+      <if test="weChatOfficialAccounts != null">
+        we_chat_official_accounts = #{weChatOfficialAccounts,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where company_id = #{companyId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.alex.job.entity.Company">
+    update lot_company
+    set company_name = #{companyName,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=CHAR},
+      lottery_server_id = #{lotteryServerId,jdbcType=CHAR},
+      company_category = #{companyCategory,jdbcType=TINYINT},
+      package_version = #{packageVersion,jdbcType=VARCHAR},
+      project_count = #{projectCount,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT},
+      client_custom_made = #{clientCustomMade,jdbcType=VARCHAR},
+      we_chat_official_accounts = #{weChatOfficialAccounts,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=BIGINT},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      created_by = #{createdBy,jdbcType=VARCHAR}
+    where company_id = #{companyId,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByCompanyCode" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_List" />
+    from lot_company
+    where company_code = #{companyCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

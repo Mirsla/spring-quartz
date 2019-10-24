@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alex.job.dao.ScheduleJobMapper">
+  <resultMap id="BaseResultMap" type="com.alex.job.entity.ScheduleJob">
+    <id column="job_id" jdbcType="INTEGER" property="jobId" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
+    <result column="job_status" jdbcType="VARCHAR" property="jobStatus" />
+    <result column="trigger_name" jdbcType="VARCHAR" property="triggerName" />
+    <result column="trigger_group" jdbcType="VARCHAR" property="triggerGroup" />
+    <result column="bean_name" jdbcType="VARCHAR" property="beanName" />
+    <result column="method_name" jdbcType="VARCHAR" property="methodName" />
+    <result column="cron_expression" jdbcType="VARCHAR" property="cronExpression" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_time" jdbcType="BIGINT" property="createdTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    job_id, job_name, job_group, job_status, trigger_name, trigger_group, bean_name, 
+    method_name, cron_expression, description, created_by, created_time, update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lot_schedule_job
+    where job_id = #{jobId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from lot_schedule_job
+    where job_id = #{jobId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.alex.job.entity.ScheduleJob">
+    insert into lot_schedule_job (job_id, job_name, job_group, 
+      job_status, trigger_name, trigger_group, 
+      bean_name, method_name, cron_expression, 
+      description, created_by, created_time, 
+      update_by, update_time)
+    values (#{jobId,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, #{jobGroup,jdbcType=VARCHAR}, 
+      #{jobStatus,jdbcType=VARCHAR}, #{triggerName,jdbcType=VARCHAR}, #{triggerGroup,jdbcType=VARCHAR}, 
+      #{beanName,jdbcType=VARCHAR}, #{methodName,jdbcType=VARCHAR}, #{cronExpression,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdTime,jdbcType=BIGINT}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.alex.job.entity.ScheduleJob">
+    insert into lot_schedule_job
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="jobId != null">
+        job_id,
+      </if>
+      <if test="jobName != null">
+        job_name,
+      </if>
+      <if test="jobGroup != null">
+        job_group,
+      </if>
+      <if test="jobStatus != null">
+        job_status,
+      </if>
+      <if test="triggerName != null">
+        trigger_name,
+      </if>
+      <if test="triggerGroup != null">
+        trigger_group,
+      </if>
+      <if test="beanName != null">
+        bean_name,
+      </if>
+      <if test="methodName != null">
+        method_name,
+      </if>
+      <if test="cronExpression != null">
+        cron_expression,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="jobId != null">
+        #{jobId,jdbcType=INTEGER},
+      </if>
+      <if test="jobName != null">
+        #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobGroup != null">
+        #{jobGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null">
+        #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerName != null">
+        #{triggerName,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerGroup != null">
+        #{triggerGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="beanName != null">
+        #{beanName,jdbcType=VARCHAR},
+      </if>
+      <if test="methodName != null">
+        #{methodName,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null">
+        #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.alex.job.entity.ScheduleJob">
+    update lot_schedule_job
+    <set>
+      <if test="jobName != null">
+        job_name = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobGroup != null">
+        job_group = #{jobGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null">
+        job_status = #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerName != null">
+        trigger_name = #{triggerName,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerGroup != null">
+        trigger_group = #{triggerGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="beanName != null">
+        bean_name = #{beanName,jdbcType=VARCHAR},
+      </if>
+      <if test="methodName != null">
+        method_name = #{methodName,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null">
+        cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where job_id = #{jobId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.alex.job.entity.ScheduleJob">
+    update lot_schedule_job
+    set job_name = #{jobName,jdbcType=VARCHAR},
+      job_group = #{jobGroup,jdbcType=VARCHAR},
+      job_status = #{jobStatus,jdbcType=VARCHAR},
+      trigger_name = #{triggerName,jdbcType=VARCHAR},
+      trigger_group = #{triggerGroup,jdbcType=VARCHAR},
+      bean_name = #{beanName,jdbcType=VARCHAR},
+      method_name = #{methodName,jdbcType=VARCHAR},
+      cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=BIGINT},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=BIGINT}
+    where job_id = #{jobId,jdbcType=INTEGER}
+  </update>
+</mapper>

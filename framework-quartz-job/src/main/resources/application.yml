@@ -1,0 +1,31 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: quartz-job
+
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/quartz?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    check-template-location: true
+    suffix: .html
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    mode: HTML5
+    cache: false
+
+mybatis:
+  mapper-locations: classpath*:mybatis/*.xml
+
+
+qx:
+  job:
+    mode: RAM
