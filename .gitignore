@@ -1,3 +1,5 @@
 framework-quartz-job/target/
 *.iml
 framework-quartz-job/.idea/
+framework-security/.idea/
+framework-security/target/
