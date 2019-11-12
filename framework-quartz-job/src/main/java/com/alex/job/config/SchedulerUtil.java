@@ -1,6 +1,7 @@
 package com.alex.job.config;
 
 import org.quartz.*;
+import org.quartz.impl.matchers.EverythingMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,10 @@ public class SchedulerUtil {
             scheduler.start();
 
             //构建job信息
-            org.quartz.JobDetail jobDetail = JobBuilder.newJob(getClass(jobClass).getClass()).withIdentity(jobName, jobGroup).withDescription(description).build();
+            org.quartz.JobDetail jobDetail = JobBuilder.newJob(Job.class).withIdentity(jobName, jobGroup).withDescription(description).build();
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            jobDataMap.put("beanName", jobClass);
+//            org.quartz.JobDetail jobDetail = JobBuilder.newJob(getClass(jobClass).getClass()).withIdentity(jobName, jobGroup).withDescription(description).build();
 
             //表达式调度构建器(即任务执行的时间)
             CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
@@ -26,13 +30,12 @@ public class SchedulerUtil {
             //按新的cronExpression表达式构建一个新的trigger
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroup)
                     .withSchedule(scheduleBuilder).build();
-
+            //添加一个全局监听器
+            scheduler.getListenerManager().addJobListener(new GlobalJobListener(), EverythingMatcher.allJobs());
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
             // job创建失败
-        } catch (ClassNotFoundException e) {
-            // 业务job类未找到
-        } catch (Exception e) {
+        }  catch (Exception e) {
             // 其他异常
         }
     }
