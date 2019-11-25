@@ -15,4 +15,29 @@ public class IndexController {
     public String index() {
         return "index";
     }
+
+    @RequestMapping("menu")
+    public String menu() {
+        return "menu";
+    }
+
+    @RequestMapping("role")
+    public String role() {
+        return "role";
+    }
+
+    @RequestMapping("log")
+    public String log() {
+        return "log";
+    }
+
+    @RequestMapping("user")
+    public String user() {
+        return "user";
+    }
+
+    @RequestMapping("product")
+    public String product() {
+        return "product";
+    }
 }

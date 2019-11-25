@@ -2,6 +2,8 @@ package com.alex.security.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author: Alex
@@ -11,16 +13,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class LoginController {
-    @RequestMapping("login")
-    public String loginPage() {
-        return "login";
+
+
+    @RequestMapping(value = "login")
+    public ModelAndView loginPage(Boolean error, String username) {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("login");
+        model.addObject("error",error);
+        model.addObject("username",username);
+        return model;
     }
 
-    @RequestMapping("toLogin")
-    public String login(String username, String password) {
-        System.out.println(username);
-        System.out.println(password);
-
-        return "index";
-    }
+//    @RequestMapping(value = "toLogin", method = RequestMethod.POST)
+//    public String login(Boolean error, String username) {
+//        System.out.println(username);
+//        return "index";
+//    }
 }
