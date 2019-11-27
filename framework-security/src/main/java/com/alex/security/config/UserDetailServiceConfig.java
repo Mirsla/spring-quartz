@@ -40,7 +40,7 @@ public class UserDetailServiceConfig implements UserDetailsService {
         // 这里手动添加一个管理员角色
         List<GrantedAuthority> roleList = new ArrayList<>();
         roleList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-//        roleList.add(new SimpleGrantedAuthority("ROLE_USER"));
+        roleList.add(new SimpleGrantedAuthority("ROLE_USER"));
         return new User(username, passwordEncoder.encode(sysUser.getPassword()), true, true, true, 0 == sysUser.getLocked(),
                 roleList);
     }
