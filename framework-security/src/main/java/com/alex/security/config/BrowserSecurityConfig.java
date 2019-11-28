@@ -1,17 +1,16 @@
 package com.alex.security.config;
 
+import com.alex.security.entity.UriAuthority;
+import com.alex.security.mapper.RoleAuthorityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -22,8 +21,8 @@ import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * WebSecurityConfigurerAdapter是由Spring Security提供的Web应用安全配置的适配器
@@ -37,6 +36,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthSuccessHandler authSuccessHandler;
     @Autowired
     private AuthFailureHandler authFailureHandler;
+    @Autowired
+    private RoleAuthorityMapper roleAuthorityMapper;
 
     /**
      *
@@ -56,7 +57,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-                        object.setSecurityMetadataSource(mySecurityMetadataSource(object.getSecurityMetadataSource()));
+                        object.setSecurityMetadataSource(customSecurityMetadataSource(object.getSecurityMetadataSource()));
                         return object;
                     }
                 }) // 自定义FilterInvocationSecurityMetadataSource
@@ -95,13 +96,24 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 = Arrays.asList(
                 new WebExpressionVoter(),
                 new RoleVoter(),
-//                new RoleBasedVoter(),
                 new AuthenticatedVoter());
+//                new RoleBasedVoter());
         return new UnanimousBased(decisionVoters);
     }
 
     @Bean
-    public AppFilterInvocationSecurityMetadataSource mySecurityMetadataSource(FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource) {
-        return new AppFilterInvocationSecurityMetadataSource(filterInvocationSecurityMetadataSource);
+    public CustomSecurityMetadataSource customSecurityMetadataSource(FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource) {
+        List<Map<String, String>> authorities = roleAuthorityMapper.selectAllAuthorityRelation();
+        // 将list转换为map
+        Map<String, Map<String, Set<String>>> collect = authorities.stream().collect(Collectors.toMap(item -> item.get("uri"), item -> {
+            Map<String, Set<String>> result = new HashMap<>();
+            Set<String> set = new HashSet<>();
+            set.add(item.get("method"));
+            result.put(item.get("code"), set);
+            return result; }, (oldValue, newValue) -> {
+                // todo 需要将两个Map合并为一个
+            return oldValue;}));
+
+        return new CustomSecurityMetadataSource(filterInvocationSecurityMetadataSource, collect);
     }
 }

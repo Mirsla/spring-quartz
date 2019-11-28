@@ -18,7 +18,7 @@ import java.util.Map;
  * author: chenshoujiang
  * date: 2019/11/27
  */
-public class RoleBasedVoter implements AccessDecisionVoter<Object> {
+public class RoleBasedVoter implements AccessDecisionVoter<FilterInvocation> {
 
     private String rolePrefix = "ROLE_";
 
@@ -44,7 +44,7 @@ public class RoleBasedVoter implements AccessDecisionVoter<Object> {
         return true;
     }
 
-    public int vote(Authentication authentication, Object object,
+    public int vote(Authentication authentication, FilterInvocation object,
                     Collection<ConfigAttribute> attributes) {
 
         // 如果没有指定认证方式直接返回-1；
@@ -57,17 +57,16 @@ public class RoleBasedVoter implements AccessDecisionVoter<Object> {
         Collection<? extends GrantedAuthority> authorities = extractAuthorities(authentication);
 
         // 获取当前访问的url
-        FilterInvocation fi = (FilterInvocation) object;
-        String url = fi.getRequestUrl();
+        String url = object.getRequestUrl();
 
         // 模拟的数据
         Map<String,String> authorityMap = new HashMap<>();
 //        authorityMap.put("/index","ROLE_ANONYMOUS"); //主页可以随意访问
-        authorityMap.put("/user","ROLE_ADMIN");
-        authorityMap.put("/log","ROLE_ADMIN");
-        authorityMap.put("/role","ROLE_ADMIN");
-        authorityMap.put("/product","ROLE_USER");
-        authorityMap.put("/menu","ROLE_USER2");
+//        authorityMap.put("/user","ROLE_ADMIN");
+//        authorityMap.put("/log","ROLE_ADMIN");
+//        authorityMap.put("/role","ROLE_ADMIN");
+//        authorityMap.put("/product","ROLE_USER");
+//        authorityMap.put("/menu","ROLE_USER2");
 
         String o = authorityMap.get(url);
         if(!StringUtils.isEmpty(o)) {
