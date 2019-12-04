@@ -2,6 +2,8 @@ package com.alex.security.config;
 
 import com.alex.security.entity.UriAuthority;
 import com.alex.security.mapper.RoleAuthorityMapper;
+import com.alex.security.util.SpringBeanUtil;
+import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +42,10 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthFailureHandler authFailureHandler;
     @Autowired
     private RoleAuthorityMapper roleAuthorityMapper;
+    @Autowired
+    private UserDetailServiceConfig userDetailServiceConfig;
+    @Autowired
+    private DruidDataSource dataSource;
 
     /**
      *
@@ -70,6 +78,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(authSuccessHandler) //登录成功处理器
                 .defaultSuccessUrl("/index")    //默认成功跳转页面，如果配置了多个成功后的处理，只有最后一个生效
                 .permitAll()  // loginPage().permitAll() 方法允许向所有用户授予与基于表单的登录相关联的所有URL的访问权限
+            .and()
+                .rememberMe()   //添加记住我功能
+                .userDetailsService(userDetailServiceConfig)
+                .tokenRepository(persistentTokenRepository()) //设置数据访问层
+                .tokenValiditySeconds(60 * 60) //设置记住我的时间，单位是秒
             .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler()) //权限不足处理器
             .and()
@@ -116,4 +129,19 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
         return new CustomSecurityMetadataSource(filterInvocationSecurityMetadataSource, collect);
     }
+
+    /**
+     * 用于持久化token的数据访问层
+     *  默认是使用PersistentTokenRepository的子类InMemoryTokenRepositoryImpl，将token放在内存中
+     *  如果使用JdbcTokenRepositoryImpl，会创建表persistent_logins，将token持久化到数据库
+     * @return PersistentTokenRepository
+     */
+@Bean
+public PersistentTokenRepository persistentTokenRepository() {
+    JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+//        SpringBeanUti
+    tokenRepository.setDataSource(dataSource); // 设置数据源
+//        tokenRepository.setCreateTableOnStartup(true); // 启动创建表，创建成功后注释掉,也可以手动执行 JdbcTokenRepositoryImpl.CREATE_TABLE_SQL
+    return tokenRepository;
+}
 }
