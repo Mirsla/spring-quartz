@@ -1,8 +1,11 @@
 package com.alex.security.config;
 
 import com.alex.security.entity.UriAuthority;
+import com.alex.security.filter.ValidateCodeFilter;
 import com.alex.security.mapper.RoleAuthorityMapper;
+import com.alex.security.util.ImageCodeGenerator;
 import com.alex.security.util.SpringBeanUtil;
+import com.alex.security.util.ValidateCodeImageUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +25,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -46,6 +50,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailServiceConfig userDetailServiceConfig;
     @Autowired
     private DruidDataSource dataSource;
+    @Autowired
+    private ValidateCodeFilter validateCodeFilter;
 
     /**
      *
@@ -54,8 +60,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests() // 授权配置拦截
-                .antMatchers("/css/**","/js/**","/layui/**","/layuiadmin/**","/fonts/**", "/favicon.ico").permitAll()   //配置的。css下的，js下的 等所有资源所有用户都能访问
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests() // 授权配置拦截
+                .antMatchers("/css/**","/js/**","/layui/**","/layuiadmin/**","/fonts/**", "/favicon.ico", "/validate/code/image").permitAll()   //配置的。css下的，js下的 等所有资源所有用户都能访问
             .and()
                 .authorizeRequests()
 //                .antMatchers("/user","/log","/role").hasRole("ADMIN") //这里配置的三个页面需要 ROLE_ADMIN的权限才能访问
@@ -136,12 +142,17 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
      *  如果使用JdbcTokenRepositoryImpl，会创建表persistent_logins，将token持久化到数据库
      * @return PersistentTokenRepository
      */
-@Bean
-public PersistentTokenRepository persistentTokenRepository() {
-    JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-//        SpringBeanUti
-    tokenRepository.setDataSource(dataSource); // 设置数据源
-//        tokenRepository.setCreateTableOnStartup(true); // 启动创建表，创建成功后注释掉,也可以手动执行 JdbcTokenRepositoryImpl.CREATE_TABLE_SQL
-    return tokenRepository;
-}
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+    //        SpringBeanUti
+        tokenRepository.setDataSource(dataSource); // 设置数据源
+    //        tokenRepository.setCreateTableOnStartup(true); // 启动创建表，创建成功后注释掉,也可以手动执行 JdbcTokenRepositoryImpl.CREATE_TABLE_SQL
+        return tokenRepository;
+    }
+
+    @Bean
+    public ImageCodeGenerator imageCodeGenerator() {
+        return new ValidateCodeImageUtil();
+    }
 }
