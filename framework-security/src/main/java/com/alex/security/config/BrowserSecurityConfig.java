@@ -1,6 +1,7 @@
 package com.alex.security.config;
 
 import com.alex.security.entity.UriAuthority;
+import com.alex.security.filter.SmsCodeFilter;
 import com.alex.security.filter.ValidateCodeFilter;
 import com.alex.security.mapper.RoleAuthorityMapper;
 import com.alex.security.util.ImageCodeGenerator;
@@ -52,6 +53,10 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     private DruidDataSource dataSource;
     @Autowired
     private ValidateCodeFilter validateCodeFilter;
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+    @Autowired
+    private SmsCodeFilter smsCodeFilter;
 
     /**
      *
@@ -60,8 +65,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests() // 授权配置拦截
-                .antMatchers("/css/**","/js/**","/layui/**","/layuiadmin/**","/fonts/**", "/favicon.ico", "/validate/code/image").permitAll()   //配置的。css下的，js下的 等所有资源所有用户都能访问
+        http.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests() // 授权配置拦截
+                .antMatchers("/css/**","/js/**","/layui/**","/layuiadmin/**","/fonts/**", "/favicon.ico", "/validate/code/image", "/sms/code").permitAll()   //配置的。css下的，js下的 等所有资源所有用户都能访问
             .and()
                 .authorizeRequests()
 //                .antMatchers("/user","/log","/role").hasRole("ADMIN") //这里配置的三个页面需要 ROLE_ADMIN的权限才能访问
@@ -82,7 +88,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .failureUrl("/login?error=true")    // 这采用的是登录错误跳转的链接。
                 .failureHandler(authFailureHandler) //登录失败的处理器
                 .successHandler(authSuccessHandler) //登录成功处理器
-                .defaultSuccessUrl("/index")    //默认成功跳转页面，如果配置了多个成功后的处理，只有最后一个生效
+//                .defaultSuccessUrl("/index")    //默认成功跳转页面，如果配置了多个成功后的处理，只有最后一个生效
                 .permitAll()  // loginPage().permitAll() 方法允许向所有用户授予与基于表单的登录相关联的所有URL的访问权限
             .and()
                 .rememberMe()   //添加记住我功能
@@ -91,6 +97,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .tokenValiditySeconds(60 * 60) //设置记住我的时间，单位是秒
             .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler()) //权限不足处理器
+                // 以下短信登录认证的配置
+            .and()
+                .apply(smsCodeAuthenticationSecurityConfig)
             .and()
                 .csrf()
                 .disable();

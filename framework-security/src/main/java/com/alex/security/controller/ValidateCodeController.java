@@ -1,6 +1,7 @@
 package com.alex.security.controller;
 
 import com.alex.security.entity.ImageCode;
+import com.alex.security.entity.SmsCode;
 import com.alex.security.util.ImageCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,5 +30,19 @@ public class ValidateCodeController {
         ImageIO.write(imageCode.getImage(), "jpeg", response.getOutputStream());
         imageCode.setImage(null);
         session.setAttribute("validateCode", imageCode);
+    }
+
+    /**
+     * 发送短信验证码
+     *  手机号校验啊这些先都不做，就实现基本的功能
+     * @param mobile 手机号
+     * @param request 请求 request
+     */
+    @GetMapping("/sms/code")
+    public void createSmsCode(String mobile, HttpServletRequest request) {
+        String verifyCode = String.valueOf((int)(Math.random()*900000 + 100000));
+        System.out.println(verifyCode);
+        SmsCode smsCode = new SmsCode(mobile, verifyCode, 60);
+        request.getSession().setAttribute("smsCode",smsCode);
     }
 }
