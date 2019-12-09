@@ -101,6 +101,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .apply(smsCodeAuthenticationSecurityConfig)
             .and()
+                .logout()
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/login")
+                .logoutUrl("/logout")
+            .and()
                 .csrf()
                 .disable();
     }
