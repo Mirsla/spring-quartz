@@ -57,6 +57,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
     @Autowired
     private SmsCodeFilter smsCodeFilter;
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     /**
      *
@@ -67,7 +69,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests() // 授权配置拦截
-                .antMatchers("/css/**","/js/**","/layui/**","/layuiadmin/**","/fonts/**", "/favicon.ico", "/validate/code/image", "/sms/code").permitAll()   //配置的。css下的，js下的 等所有资源所有用户都能访问
+                .antMatchers("/css/**","/js/**","/layui/**","/layuiadmin/**","/fonts/**", "/favicon.ico", "/validate/code/image", "/sms/code", "/logout/success").permitAll()   //配置的。css下的，js下的 等所有资源所有用户都能访问
             .and()
                 .authorizeRequests()
 //                .antMatchers("/user","/log","/role").hasRole("ADMIN") //这里配置的三个页面需要 ROLE_ADMIN的权限才能访问
@@ -103,7 +105,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .logout()
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/logout/success")
+                .logoutSuccessHandler(customLogoutSuccessHandler)
                 .logoutUrl("/logout")
             .and()
                 .csrf()

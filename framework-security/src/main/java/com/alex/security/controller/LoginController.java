@@ -1,8 +1,10 @@
 package com.alex.security.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -22,6 +24,12 @@ public class LoginController {
         model.addObject("error",error);
         model.addObject("username",username);
         return model;
+    }
+
+    @RequestMapping(value = "/logout/success")
+    @ResponseBody
+    public String logout() {
+        return "退出登录成功，这是/logout/success";
     }
 
 //    @RequestMapping(value = "toLogin", method = RequestMethod.POST)
