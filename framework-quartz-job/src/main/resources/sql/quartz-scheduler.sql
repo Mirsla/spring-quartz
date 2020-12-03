@@ -5,7 +5,10 @@
 #
 # In your Quartz properties file, you'll need to set
 # org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-#
+
+###################################################
+# 使用之前自己把这个表的名称都修改为小写，避免查询的时候报错 #
+###################################################
 
 DROP TABLE IF EXISTS QRTZ_FIRED_TRIGGERS;
 DROP TABLE IF EXISTS QRTZ_PAUSED_TRIGGER_GRPS;
